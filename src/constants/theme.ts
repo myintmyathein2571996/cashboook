@@ -1,0 +1,15 @@
+export const AppColors = {
+  primary: '#2563EB',
+  primaryLight: '#EFF6FF',
+  income: '#16A34A',
+  incomeLight: '#F0FDF4',
+  expense: '#DC2626',
+  expenseLight: '#FEF2F2',
+  background: '#F8FAFC',
+  card: '#FFFFFF',
+  border: '#E2E8F0',
+  text: '#0F172A',
+  textSecondary: '#64748B',
+  textMuted: '#94A3B8',
+  warning: '#D97706',
+};

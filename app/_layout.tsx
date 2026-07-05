@@ -1,22 +1,20 @@
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { DatabaseProvider } from '@/src/context/DatabaseContext';
+import { RefreshProvider } from '@/src/context/RefreshContext';
+import { AppColors } from '@/src/constants/theme';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: '(tabs)',
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -24,7 +22,6 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -39,18 +36,29 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <DatabaseProvider>
+      <RefreshProvider>
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: AppColors.card },
+            headerTintColor: AppColors.primary,
+            headerTitleStyle: { fontWeight: '600', color: AppColors.text },
+            contentStyle: { backgroundColor: AppColors.background },
+          }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="quick-add"
+            options={{ presentation: 'modal', title: 'Add Transaction', headerShown: false }}
+          />
+          <Stack.Screen name="transaction/add" options={{ title: 'Add Transaction' }} />
+          <Stack.Screen name="transaction/[id]" options={{ title: 'Edit Transaction' }} />
+          <Stack.Screen name="person/add" options={{ title: 'Add Person' }} />
+          <Stack.Screen name="person/[id]" options={{ title: 'Person' }} />
+          <Stack.Screen name="person/entry-add" options={{ title: 'Record Entry' }} />
+        </Stack>
+      </RefreshProvider>
+    </DatabaseProvider>
   );
 }
